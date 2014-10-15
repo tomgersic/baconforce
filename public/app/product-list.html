@@ -1,0 +1,82 @@
+﻿<link rel="import" href="../components/polymer/polymer.html">
+<link rel="import" href="../product-service/product-service.html">
+<link rel="import" href="../user-service/user-service.html">
+<link rel="import" href="../order-service/order-service.html">
+<link rel="import" href="../components/paper-button/paper-button.html">
+<link rel="import" href="../components/paper-toast/paper-toast.html">
+<link rel="import" href="product-card.html">
+
+<polymer-element name="product-list" attributes="show">
+  <template>
+    <style>
+    :host {
+      display: block;
+      width: 100%;
+    }
+    product-card {
+      margin-bottom: 30px;
+    }
+    paper-toast {
+
+    }
+    </style>
+    
+    <user-service id="service" user="{{user}}"></user-service>
+    <product-service id="service" products="{{products}}"></product-service>
+    <order-service id="orderservice" on-order-success="{{handleOrderSuccess}}" on-order-failure="{{handleOrderFailure}}"></order-service>
+    <paper-toast id="messageToast" text="Please sign in"></paper-toast>
+    <div layout vertical center>
+      <template repeat="{{product in products}}">
+        <product-card productId="{{product.sfid}}" on-amount-changed="{{amountChanged}}">
+          <img src="{{product.image_url__c}}" width="70" height="70">
+          <h2>{{product.name}}</h2>
+          <p>{{product.description}}</p>
+        </product-card>
+      </template>
+      <paper-button raisedButton label="Order Now" on-tap="{{orderNow}}"></paper-button>
+    </div>
+  </template>
+  <script>
+  Polymer({
+    created:function(){
+      this.orderDetails = {};
+      this.orderDetails.userId = null;
+      this.orderDetails.items = {}
+    },
+    //Order Button pressed -- process the order
+    orderNow: function(event,detail,sender) {
+      var user = sender.templateInstance.model.user;
+      if(user == null || user == "") {
+        console.log("Not logged in");  
+        this.$.messageToast.text = "Please sign in";
+        this.$.loginToast.show();
+      }
+      else {
+        this.orderDetails.userId = user.user_id;
+        this.orderDetails.userName = user.display_name;
+        console.log(this.orderDetails);
+
+        var orderService = this.$.orderservice; 
+        orderService.go(this.orderDetails);
+
+      }
+    },
+    //handle a successful response from the API
+    handleOrderSuccess: function(e,detail,sender){
+      this.$.messageToast.text = "Order Placed Successfully! Thanks!";
+      this.$.messageToast.show();
+    },
+    //handle a failure reponse from the API
+    handleOrderFailure: function(e,detail,sender){
+      this.$.messageToast.text = "Sorry, order process has failed";
+      this.$.messageToast.show();
+    },
+    //handle a changed amount from the product card
+    amountChanged: function(event,detail,sender) {
+      console.log(detail);
+      this.orderDetails.items[detail.productId] = detail.orderAmount;
+    }
+  });
+  </script>
+
+</polymer-element>

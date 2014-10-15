@@ -1,0 +1,30 @@
+<link rel="import" href="../components/paper-menu-button/paper-menu-button.html">
+<link href="../components/paper-item/paper-item.html" rel="import">
+
+<polymer-element name="my-menu">
+    <template>
+        <style>
+            paper-menu-button {
+                color:gray;
+                valign:bottom;
+                width:100px;
+            }
+        </style>
+        <paper-menu-button icon="account-circle">
+            <paper-item on-tap="{{signIn}}">Sign In</paper-item>
+            <paper-item on-tap="{{help}}">Help</paper-item>
+            <paper-item on-tap="{{signOut}}">Sign out</paper-item>
+        </paper-menu-button>
+    </template>
+
+    <script>
+        Polymer('my-menu', {
+            signIn: function () { 
+                console.log('Sign In'); 
+                window.open("/auth/forcedotcom","_self")
+            },
+            help: function () { console.log('Help'); },
+            signOut: function () { console.log('Sign out'); }
+        });
+    </script>
+</polymer-element>

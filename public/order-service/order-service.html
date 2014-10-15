@@ -1,0 +1,44 @@
+<link rel="import" href="../components/polymer/polymer.html">
+<link rel="import" href="../components/core-ajax/core-ajax.html">
+
+<polymer-element name="order-service">
+  <template>
+    <style>
+    :host {
+      display: none;
+    }
+    </style>
+    <core-ajax id="ajax"
+      url="/order"
+      method="post"
+      on-core-response="{{handleResponse}}"
+      contentType = "application/json"
+      handleAs="json">
+    </core-ajax>
+  </template>
+  <script>
+  Polymer('order-service', {
+    created: function() {
+      this.response = {};
+    },
+    //handle a response from the server and fire an event back to the UI
+    handleResponse: function() {
+      // Make a copy of the loaded data
+      this.response = this.$.ajax.response;
+      console.log(this.response);
+      if(this.response.status == "success") {
+        this.fire('order-success');
+      }
+      else {
+        this.fire('order-failure');
+      }
+    },
+    //query the API
+    go:function(params){
+      console.log("GO GO GO");
+      this.$.ajax.body = JSON.stringify(params);
+      this.$.ajax.go();
+    }
+  });
+  </script>
+</polymer-element>

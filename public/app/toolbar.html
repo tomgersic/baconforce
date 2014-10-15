@@ -1,0 +1,37 @@
+<link rel="import" href="../components/polymer/polymer.html">
+<link rel="import" href="../components/core-toolbar/core-toolbar.html">
+<link rel="import" href="../components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../user-service/user-service.html">
+<link rel="import" href="menu.html">
+
+<polymer-element name="my-toolbar" attributes="show">
+  <template>
+    <style>
+    :host {
+      display: block;
+      width: 100%;
+    }
+    core-toolbar {
+      background: orange;
+      color:white;
+    }
+    #username {
+      float: right;
+      font-size: 80%;
+    }
+    </style>
+    
+    <user-service id="service" user="{{user}}"></user-service>
+    <core-toolbar>
+      <span flex>Welcome to Baconforce</span>
+      <span id="username">{{user.display_name}}</span>
+      <my-menu></my-menu>
+    </core-toolbar>
+  </template>
+  <script>
+  Polymer({
+
+  });
+  </script>
+
+</polymer-element>

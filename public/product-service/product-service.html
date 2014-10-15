@@ -1,0 +1,29 @@
+<link rel="import" href="../components/polymer/polymer.html">
+<link rel="import" href="../components/core-ajax/core-ajax.html">
+
+<polymer-element name="product-service" attributes="products">
+  <template>
+    <style>
+    :host {
+      display: none;
+    }
+    </style>
+    <core-ajax id="ajax"
+      auto
+      url="/products"
+      on-core-response="{{productsLoaded}}"
+      handleAs="json">
+    </core-ajax>
+  </template>
+  <script>
+  Polymer('product-service', {
+    created: function() {
+      this.products = [];
+    },
+    productsLoaded: function() {
+      // Make a copy of the loaded data
+      this.products = this.$.ajax.response.slice(0);
+    },
+  });
+  </script>
+</polymer-element>
